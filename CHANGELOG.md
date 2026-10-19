@@ -4,6 +4,11 @@ All notable changes to the LoopDues WordPress plugin. Versions follow [Semantic 
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-10-19
+### Changed
+- Settings page and installation steps now point to **Admin → Website sign-in** in LoopDues, the menu's current name (it was Admin → WordPress).
+- Sign-in and the connection check now use `/connect/sso` and `/connect/ping`, the addresses in the LoopDues developer docs. The `/wp/sso` and `/wp/ping` aliases the plugin used before are permanent, so older copies keep working.
+
 ## [1.0.1] - 2026-10-19
 ### Changed
 - Now maintained in-house, since LoopDues no longer provides the plugin.

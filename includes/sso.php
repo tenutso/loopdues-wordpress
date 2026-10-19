@@ -3,7 +3,7 @@
  * "Sign in with LoopDues".
  *
  *   1. /?loopdues_login=1&redirect_to=… sets a one-time state cookie and sends the visitor to
- *      https://{org}.loopdues.com/wp/sso?site=…&state=…&return=…  (they sign in there if they aren't already).
+ *      https://{org}.loopdues.com/connect/sso?site=…&state=…&return=…  (they sign in there if they aren't already).
  *   2. LoopDues sends them back to /?loopdues_sso=1&ld_token={payload}.{signature}: base64url JSON signed with
  *      HMAC-SHA256 and the connection secret, valid for two minutes, carrying the state from step 1.
  *   3. We check it, find or create the WordPress user, copy the member record and log them in.
@@ -70,7 +70,7 @@ function loopdues_start_sso()
         'site' => $c['site'],
         'state' => $state,
         'return' => rawurlencode(add_query_arg('loopdues_sso', '1', home_url('/'))),
-    ], loopdues_url('wp/sso'));
+    ], loopdues_url('connect/sso'));
 
     wp_redirect($url); // LoopDues is another host, so not wp_safe_redirect
     exit;

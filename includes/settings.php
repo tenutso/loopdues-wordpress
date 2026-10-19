@@ -61,7 +61,7 @@ function loopdues_settings_page()
         <?php } elseif ($check) { ?>
             <div class="notice notice-error"><p><?php echo esc_html(sprintf(__('Could not connect: %s', 'loopdues'), $check)); ?></p></div>
         <?php } elseif ($key !== '' && ! $c) { ?>
-            <div class="notice notice-error"><p><?php esc_html_e('That doesn\'t look like a LoopDues connection key. Copy it again from LoopDues: Admin → WordPress.', 'loopdues'); ?></p></div>
+            <div class="notice notice-error"><p><?php esc_html_e('That doesn\'t look like a LoopDues connection key. Copy it again from LoopDues: Admin → Website sign-in.', 'loopdues'); ?></p></div>
         <?php } ?>
 
         <form method="post" action="options.php">
@@ -71,7 +71,7 @@ function loopdues_settings_page()
                     <th scope="row"><label for="loopdues_key"><?php esc_html_e('Connection key', 'loopdues'); ?></label></th>
                     <td>
                         <input type="password" id="loopdues_key" name="loopdues_key" value="<?php echo esc_attr($key); ?>" class="large-text code" autocomplete="off">
-                        <p class="description"><?php esc_html_e('In LoopDues, go to Admin → WordPress, add this site, and paste the key it shows.', 'loopdues'); ?></p>
+                        <p class="description"><?php esc_html_e('In LoopDues, go to Admin → Website sign-in, add this site, and paste the key it shows.', 'loopdues'); ?></p>
                         <?php if ($c && $org['name']) { ?>
                             <p><?php printf(esc_html__('Connected to %1$s (%2$s). Last checked %3$s ago.', 'loopdues'), '<strong>'.esc_html($org['name']).'</strong>', esc_html($c['subdomain'].'.loopdues.com'), esc_html(human_time_diff($org['checked_at']))); ?></p>
                         <?php } ?>

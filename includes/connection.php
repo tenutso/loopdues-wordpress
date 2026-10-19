@@ -54,7 +54,7 @@ function loopdues_refresh_org()
     }
 
     $t = time();
-    $response = wp_remote_get(add_query_arg('site', $c['site'], loopdues_url('wp/ping')), [
+    $response = wp_remote_get(add_query_arg('site', $c['site'], loopdues_url('connect/ping')), [
         'timeout' => 10,
         'headers' => ['LoopDues-Signature' => 't='.$t.',v1='.loopdues_sign($t.'.ping.'.$c['site'], $c['secret'])],
     ]);
