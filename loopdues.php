@@ -1,19 +1,21 @@
 <?php
 /**
  * Plugin Name:       LoopDues
- * Plugin URI:        https://loopdues.com
+ * Plugin URI:        https://github.com/tenutso/loopdues-wordpress
  * Description:       Join form, member login and members-only content for organizations that run their memberships on LoopDues.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Requires at least: 6.2
  * Requires PHP:      7.4
- * Author:            LoopDues
+ * Author:            Tentuso
+ * Author URI:        https://github.com/tenutso
  * License:           GPL-2.0-or-later
  * Text Domain:       loopdues
+ * Update URI:        false
  */
 
 defined('ABSPATH') || exit;
 
-define('LOOPDUES_VERSION', '1.0.0');
+define('LOOPDUES_VERSION', '1.0.1');
 define('LOOPDUES_DIR', plugin_dir_path(__FILE__));
 define('LOOPDUES_URL', plugin_dir_url(__FILE__));
 

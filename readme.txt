@@ -1,10 +1,10 @@
 === LoopDues ===
-Contributors: loopdues
+Contributors: tenutso
 Tags: membership, members only, association, dues, login
 Requires at least: 6.2
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 
 Join form, member login and members-only content for organizations that run their memberships on LoopDues.
@@ -25,5 +25,9 @@ Join form, member login and members-only content for organizations that run thei
 
 == Changelog ==
 
+= 1.0.1 =
+* Now maintained in-house, since LoopDues no longer provides the plugin. Source: https://github.com/tenutso/loopdues-wordpress
+* Plugin header: new author and plugin URI, and "Update URI: false" so WordPress never replaces it with a same-named plugin from WordPress.org.
+
 = 1.0.0 =
-* First release.
+* Original release from LoopDues, adapted for oao.on.ca (members get the `oao_member` role).
