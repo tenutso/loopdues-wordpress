@@ -3,7 +3,7 @@
  * Plugin Name:       LoopDues
  * Plugin URI:        https://github.com/tenutso/loopdues-wordpress
  * Description:       Join form, member login and members-only content for organizations that run their memberships on LoopDues.
- * Version:           1.0.2
+ * Version:           1.0.3
  * Requires at least: 6.2
  * Requires PHP:      7.4
  * Author:            Tentuso
@@ -15,7 +15,7 @@
 
 defined('ABSPATH') || exit;
 
-define('LOOPDUES_VERSION', '1.0.2');
+define('LOOPDUES_VERSION', '1.0.3');
 define('LOOPDUES_DIR', plugin_dir_path(__FILE__));
 define('LOOPDUES_URL', plugin_dir_url(__FILE__));
 

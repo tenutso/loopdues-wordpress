@@ -107,7 +107,7 @@ function loopdues_finish_sso()
         loopdues_sso_fail($user->get_error_message());
     }
 
-    loopdues_store_member($user->ID, $claims['member'], (int) $claims['iat']);
+    loopdues_store_member($user->ID, $claims['member'], (int) $claims['iat'], ['source' => 'sign-in']);
     wp_set_current_user($user->ID);
     wp_set_auth_cookie($user->ID, true);
     do_action('wp_login', $user->user_login, $user);

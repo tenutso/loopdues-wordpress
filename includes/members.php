@@ -27,13 +27,18 @@ function loopdues_user_by_member_id($memberId)
 /**
  * Store a LoopDues member record on a user. $at is when LoopDues produced the record: older records (a webhook
  * retried after a newer sign-in, say) are ignored so a stale copy never overwrites a fresh one.
+ *
+ * $context says where the record came from, for the loopdues_member_updated action:
+ * ['source' => 'sign-in'] or ['source' => 'webhook', 'event' => 'membership.renewed', 'event_id' => '…'].
  */
-function loopdues_store_member($userId, array $member, $at)
+function loopdues_store_member($userId, array $member, $at, array $context = [])
 {
-    $previous = (int) get_user_meta($userId, 'loopdues_synced_at', true);
-    if ($previous && $at < $previous) {
+    $syncedAt = (int) get_user_meta($userId, 'loopdues_synced_at', true);
+    if ($syncedAt && $at < $syncedAt) {
         return false;
     }
+
+    $previous = loopdues_member_record($userId);
 
     update_user_meta($userId, 'loopdues_member_id', (int) $member['id']);
     update_user_meta($userId, 'loopdues_status', sanitize_key($member['status'] ?? ''));
@@ -51,7 +56,44 @@ function loopdues_store_member($userId, array $member, $at)
         wp_update_user(['ID' => $userId] + $names + ($display ? ['display_name' => $display] : []));
     }
 
+    /**
+     * A linked member's record was stored, at sign-in or from a LoopDues webhook. Runs every time, even when nothing
+     * changed: compare $current with $previous to see what did.
+     *
+     * @param int        $userId   WordPress user id.
+     * @param array      $current  The stored record now (see loopdues_member_record()).
+     * @param array|null $previous The record before, or null if the user wasn't linked yet.
+     * @param array      $member   The full member record from LoopDues (webhooks carry more fields than sign-in).
+     * @param array      $context  ['source' => 'sign-in'] or ['source' => 'webhook', 'event' => type, 'event_id' => id].
+     */
+    do_action('loopdues_member_updated', (int) $userId, loopdues_member_record($userId), $previous, $member, $context);
+
     return true;
+}
+
+/**
+ * The LoopDues record stored on a user, or null if they aren't linked.
+ *
+ * @return array{member_id: int, status: string, current: bool, tier_id: int, tier_name: string, paid_through: string, synced_at: int}|null
+ */
+function loopdues_member_record($userId = null)
+{
+    $userId = $userId ?? get_current_user_id();
+    $memberId = (int) get_user_meta($userId, 'loopdues_member_id', true);
+    if (! $userId || ! $memberId) {
+        return null;
+    }
+    $status = (string) get_user_meta($userId, 'loopdues_status', true);
+
+    return [
+        'member_id' => $memberId,
+        'status' => $status,
+        'current' => in_array($status, LOOPDUES_CURRENT_STATUSES, true),
+        'tier_id' => (int) get_user_meta($userId, 'loopdues_tier_id', true),
+        'tier_name' => (string) get_user_meta($userId, 'loopdues_tier_name', true),
+        'paid_through' => (string) get_user_meta($userId, 'loopdues_paid_through', true),
+        'synced_at' => (int) get_user_meta($userId, 'loopdues_synced_at', true),
+    ];
 }
 
 /** The member was erased or merged in LoopDues: the WordPress user stays (with their comments etc.), unlinked. */

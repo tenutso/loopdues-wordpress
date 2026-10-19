@@ -133,6 +133,7 @@ A **current member** is a linked user whose LoopDues status is `active` or `grac
 |---|---|
 | `loopdues_is_current_member( $user_id = null, array $tier_ids = [] )` | `true` if the user (default: current user) is a current member, optionally only in one of the given tiers. Passes through the `loopdues_is_current_member` filter. |
 | `loopdues_is_linked_member( $user_id = null )` | Truthy if the user is linked to a LoopDues member, whatever their status. Use it to tell lapsed members from visitors. |
+| `loopdues_member_record( $user_id = null )` | The stored record as an array, or `null` if the user isn't linked: `member_id`, `status`, `current` (bool), `tier_id`, `tier_name`, `paid_through`, `synced_at`. Since 1.0.3. |
 | `loopdues_user_by_member_id( $member_id )` | The `WP_User` linked to a LoopDues member id, or `null`. |
 | `loopdues_login_url( $redirect_to = '' )` | URL that signs a member in and brings them back to `$redirect_to` (default: the current page). |
 | `loopdues_login_html( [ 'label' => '' ] )` | The login button, or **My account** / **Log out** for signed-in members. Same output as `[loopdues_login]`. |
@@ -178,22 +179,39 @@ Prefer `loopdues_post_rule()` and `loopdues_post_hidden()` over reading these di
 
 ### Reacting to changes
 
-Members are signed in with `wp_set_auth_cookie()`, and the standard `wp_login` action runs, so existing login hooks work. To react when a member's standing changes, through sign-in or a webhook, hook the user-meta actions for `loopdues_status`:
+Use the `loopdues_member_updated` action (since 1.0.3). It runs whenever a linked member's record is stored: at every sign-in, and for every membership or payment webhook from LoopDues.
 
 ```php
-add_action( 'updated_user_meta', 'my_loopdues_status_changed', 10, 4 );
-add_action( 'added_user_meta', 'my_loopdues_status_changed', 10, 4 );
+add_action( 'loopdues_member_updated', function ( $user_id, $current, $previous, $member, $context ) {
+    $was_current = $previous && $previous['current'];
 
-function my_loopdues_status_changed( $meta_id, $user_id, $meta_key, $status ) {
-    if ( 'loopdues_status' !== $meta_key ) {
-        return;
+    if ( $current['current'] && ! $was_current ) {
+        // joined, renewed after lapsing, or signed in for the first time as a current member
+    } elseif ( ! $current['current'] && $was_current ) {
+        // lapsed: grace period over, expired, cancelled…
     }
-    $current = in_array( $status, LOOPDUES_CURRENT_STATUSES, true );
-    // e.g. add or remove a role, update a mailing list, clear a cache…
-}
+
+    if ( $previous && $previous['tier_id'] !== $current['tier_id'] ) {
+        // changed tier
+    }
+}, 10, 5 );
 ```
 
-`updated_user_meta` runs only when the value actually changes.
+| Argument | Contains |
+|---|---|
+| `$user_id` | WordPress user id |
+| `$current` | The stored record now, as returned by `loopdues_member_record()` |
+| `$previous` | The record before this update, or `null` if the user wasn't linked yet (first sign-in) |
+| `$member` | The member record exactly as LoopDues sent it. Webhooks carry the full record (email, phone, address, custom attributes…); sign-in carries only the fields listed under `loopdues_member_record()`. |
+| `$context` | `[ 'source' => 'sign-in' ]` or `[ 'source' => 'webhook', 'event' => 'membership.renewed', 'event_id' => '…' ]` |
+
+Notes:
+
+- It runs on every update, even when nothing changed (a member signing in again, a `payment.received` event), so compare `$current` with `$previous`.
+- It doesn't run for an update that is older than the stored record (events can arrive late), or for members who have never signed in to the site.
+- Webhook handlers must answer LoopDues within 10 seconds, so keep listeners quick. Hand slow work (a CRM or mailing-list call) to `wp_schedule_single_event()`.
+- Members are signed in with `wp_set_auth_cookie()` and the standard `wp_login` action runs too, so existing login hooks keep working.
+- When a member is erased or merged in LoopDues, the plugin removes their `loopdues_*` user meta. To react to that, hook `deleted_user_meta` for the key `loopdues_member_id`.
 
 ### Examples
 

@@ -51,7 +51,7 @@ function loopdues_handle_webhook(WP_REST_Request $request)
 
     if (strpos($type, 'membership.') === 0 || strpos($type, 'payment.') === 0) {
         $at = strtotime($event['created_at'] ?? '') ?: time();
-        $stored = loopdues_store_member($user->ID, $member, $at);
+        $stored = loopdues_store_member($user->ID, $member, $at, ['source' => 'webhook', 'event' => $type, 'event_id' => (string) ($event['id'] ?? '')]);
 
         return new WP_REST_Response(['ok' => true, 'message' => $stored ? 'Updated.' : 'Older than what we have; skipped.'], 200);
     }

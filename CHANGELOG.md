@@ -3,7 +3,11 @@
 All notable changes to the LoopDues WordPress plugin. Versions follow [Semantic Versioning](https://semver.org/). When you release, bump the version in `loopdues.php` (both the `Version:` header and `LOOPDUES_VERSION`) and the `Stable tag` in `readme.txt`, and add the entry to the changelog in `readme.txt` too.
 
 ## [Unreleased]
+
+## [1.0.3] - 2026-10-19
 ### Added
+- `loopdues_member_updated` action, run whenever a linked member's record is stored (at sign-in and from webhooks), with the record before and after, the full member record from LoopDues, and where it came from. See "Reacting to changes" in the README.
+- `loopdues_member_record()`, which returns the stored record for a user (status, whether current, tier, paid-through date) as one array.
 - `README.md` with features, installation and a developer guide (functions, user meta, filters and examples for themes and other plugins).
 - Download link and the Allowed websites step in the installation steps in `readme.txt`.
 

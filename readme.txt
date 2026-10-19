@@ -4,7 +4,7 @@ Tags: membership, members only, association, dues, login
 Requires at least: 6.2
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 License: GPLv2 or later
 
 Join form, member login and members-only content for organizations that run their memberships on LoopDues.
@@ -28,6 +28,11 @@ All releases and developer documentation: https://github.com/tenutso/loopdues-wo
 4. For the join form, add your site's address to Allowed websites under Settings → Website signup widget in LoopDues.
 
 == Changelog ==
+
+= 1.0.3 =
+* New loopdues_member_updated action for themes and other plugins: runs at every sign-in and membership update, with the record before and after.
+* New loopdues_member_record() function: a user's stored LoopDues record as one array.
+* Installation steps: download link, and the Allowed websites step for the join form.
 
 = 1.0.2 =
 * Settings and installation steps now point to Admin → Website sign-in in LoopDues (formerly Admin → WordPress).
