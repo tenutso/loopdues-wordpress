@@ -19,9 +19,13 @@ Join form, member login and members-only content for organizations that run thei
 
 == Installation ==
 
-1. Upload and activate the plugin.
+Download the latest version: https://github.com/tenutso/loopdues-wordpress/releases/latest/download/loopdues.zip
+All releases and developer documentation: https://github.com/tenutso/loopdues-wordpress
+
+1. In WordPress, go to Plugins → Add New → Upload Plugin, choose loopdues.zip and activate it.
 2. In LoopDues, go to Admin → Website sign-in, add your site's address and copy the connection key.
 3. In WordPress, go to Settings → LoopDues and paste the key.
+4. For the join form, add your site's address to Allowed websites under Settings → Website signup widget in LoopDues.
 
 == Changelog ==
 
